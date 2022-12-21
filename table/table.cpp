@@ -1,4 +1,8 @@
 #include "table.h"
+
+#include <QDebug>
+#include <algorithm>
+
 #include "../common/config.h"
 
 cwidget::MainTable::MainTable(qint32 rows, qint32 columns, QWidget* parent)
@@ -31,4 +35,43 @@ void cwidget::MainTable::ChangeCell(qint32 row, qint32 column) {
   if (column == columnCount() - 1) {
     insertColumn(columnCount());
   }
+}
+
+quint64 cwidget::MainTable::GetCountRowWithData() const {
+  for(quint64 idx = 0; idx < rowCount(); ++idx) {
+    auto item_table = item(0, idx);
+    if (!item_table || item_table->text().isEmpty()) {
+      return idx;
+    }
+  }
+}
+
+quint64 cwidget::MainTable::GetCountColWithData() const {
+  for(quint64 idx = 0; idx < columnCount(); ++idx) {
+    auto item_table = item(idx, 0);
+    if (!item_table || item_table->text().isEmpty()) {
+      return idx;
+    }
+  }
+}
+
+std::vector<std::vector<double>> cwidget::MainTable::GetElements(quint64 row, quint64 col) const {
+  std::vector<std::vector<double>> result;
+
+  for(quint64 idx_r = 0; idx_r < row; ++idx_r) {
+    std::vector<double> data_in_row;
+
+    for(quint64 idx_c = 0; idx_c < col; ++idx_c) {
+      auto item_table = item(idx_r, idx_c);
+      if (item_table) {
+        auto text_item = item_table->text();
+        if (!text_item.isEmpty()) {
+          data_in_row.push_back(text_item.toDouble());
+        }
+      }
+    }
+    result.push_back(data_in_row);
+  }
+
+  return result;
 }

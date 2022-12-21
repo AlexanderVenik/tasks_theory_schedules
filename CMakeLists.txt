@@ -14,7 +14,7 @@ find_package(Qt6 COMPONENTS
         Widgets
         REQUIRED)
 
-add_executable(tasks_theory_schedules main.cpp main_window.cpp MainWindow.h MainWindow.h table/table.cpp table/table.h common/config.h)
+add_executable(tasks_theory_schedules main.cpp main_window.cpp MainWindow.h MainWindow.h table/table.cpp table/table.h common/config.h logger/logger.cpp logger/logger.h common/common.h common/algo.h solution/hungarian.cpp solution/hungarian.h)
 target_link_libraries(tasks_theory_schedules
         Qt::Core
         Qt::Gui
