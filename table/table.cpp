@@ -44,6 +44,7 @@ quint64 cwidget::MainTable::GetCountRowWithData() const {
       return idx;
     }
   }
+  return 0;
 }
 
 quint64 cwidget::MainTable::GetCountColWithData() const {
@@ -53,6 +54,7 @@ quint64 cwidget::MainTable::GetCountColWithData() const {
       return idx;
     }
   }
+  return 0;
 }
 
 std::vector<std::vector<double>> cwidget::MainTable::GetElements(quint64 row, quint64 col) const {

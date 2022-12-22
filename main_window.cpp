@@ -9,25 +9,15 @@
 #include <QPushButton>
 #include <memory>
 
-window::MainWindow::MainWindow() {
+window::MainWindow::MainWindow()
+  : m_logger(std::make_shared<logging_in::Logger>()),
+    m_table(std::make_shared<cwidget::MainTable>(SIZE_TABLE, SIZE_TABLE)) {
   setMinimumSize(QSize(SIZE_WINDOW, SIZE_WINDOW));
-
-  m_logger = std::make_unique<logging_in::Logger>();
-
-  m_table = std::make_shared<cwidget::MainTable>(SIZE_TABLE, SIZE_TABLE);
   m_table->setShowGrid(true);
 
   m_box = new QVBoxLayout();
   if (m_box) {
     m_box->addWidget(m_table.get());
-
-//    m_target_function = new QComboBox();
-//    if (m_target_function) {
-//      m_target_function->addItems(QStringList() << "Максимум"
-//                                                << "Минимум");
-//      m_target_function->setFont(config::MAIN_FONT);
-//      m_box->addWidget(m_target_function);
-//    }
 
     m_btn_decide = new QPushButton("Решить");
     if (m_btn_decide) {
@@ -67,8 +57,11 @@ void window::MainWindow::Solve() {
         m_table->GetElements(count_row_of_with_data, count_col_of_with_data);
 
     vector<int> assignment;
-    HungarianAlgorithm HungAlgo;
-    m_logger->WriteLine("F = " + QString::number(HungAlgo.Solve(values_in_range, assignment)));
+    HungarianAlgorithm HungAlgo(m_logger.get());
+
+    auto result = HungAlgo.Solve(values_in_range, assignment);
+    m_logger->Write("F = ");
+    m_logger->WriteLine(QString::number(result));
   }
 }
 

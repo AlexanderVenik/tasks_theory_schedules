@@ -38,7 +38,7 @@ class MainWindow : public QMainWindow {
 
   QComboBox* m_target_function;
   QPushButton* m_btn_decide;
-  std::unique_ptr<logging_in::Logger> m_logger;
+  std::shared_ptr<logging_in::Logger> m_logger;
 };
 
 }  // namespace window

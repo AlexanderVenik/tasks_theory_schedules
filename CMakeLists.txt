@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.16.3)
 project(tasks_theory_schedules)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -6,7 +6,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(CMAKE_PREFIX_PATH "D:/Soft/Qt/6.2.4/mingw_64")
+set(CMAKE_PREFIX_PATH "D:\\Soft\\Qt\\6.2.4\\msvc2019_64")
 
 find_package(Qt6 COMPONENTS
         Core
@@ -14,7 +14,7 @@ find_package(Qt6 COMPONENTS
         Widgets
         REQUIRED)
 
-add_executable(tasks_theory_schedules main.cpp main_window.cpp MainWindow.h MainWindow.h table/table.cpp table/table.h common/config.h logger/logger.cpp logger/logger.h common/common.h common/algo.h solution/hungarian.cpp solution/hungarian.h)
+add_executable(tasks_theory_schedules WIN32 main.cpp main_window.cpp MainWindow.h MainWindow.h table/table.cpp table/table.h common/config.h logger/logger.cpp logger/logger.h common/common.h common/algo.h solution/hungarian.cpp solution/hungarian.h)
 target_link_libraries(tasks_theory_schedules
         Qt::Core
         Qt::Gui

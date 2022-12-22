@@ -4,13 +4,15 @@
 #include <iostream>
 #include <vector>
 
+#include "../logger/logger.h"
+
 using namespace std;
 
 
 class HungarianAlgorithm
 {
  public:
-  HungarianAlgorithm();
+  HungarianAlgorithm(logging_in::Logger* logger);
   ~HungarianAlgorithm();
   double Solve(vector <vector<double> >& DistMatrix, vector<int>& Assignment);
 
@@ -23,6 +25,9 @@ class HungarianAlgorithm
   void step3(int *assignment, double *distMatrix, bool *starMatrix, bool *newStarMatrix, bool *primeMatrix, bool *coveredColumns, bool *coveredRows, int nOfRows, int nOfColumns, int minDim);
   void step4(int *assignment, double *distMatrix, bool *starMatrix, bool *newStarMatrix, bool *primeMatrix, bool *coveredColumns, bool *coveredRows, int nOfRows, int nOfColumns, int minDim, int row, int col);
   void step5(int *assignment, double *distMatrix, bool *starMatrix, bool *newStarMatrix, bool *primeMatrix, bool *coveredColumns, bool *coveredRows, int nOfRows, int nOfColumns, int minDim);
+
+ private:
+  logging_in::Logger* m_logger;
 };
 
 
