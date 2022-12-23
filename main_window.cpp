@@ -59,9 +59,15 @@ void window::MainWindow::Solve() {
     vector<int> assignment;
     HungarianAlgorithm HungAlgo(m_logger.get());
 
-    auto result = HungAlgo.Solve(values_in_range, assignment);
+
+    auto [result_function, number_function] = HungAlgo.Solve(values_in_range, assignment);
     m_logger->Write("F = ");
-    m_logger->WriteLine(QString::number(result));
+    for(const auto& iter : number_function) {
+      m_logger->Write(QString::number(iter) + " + ");
+    }
+
+    m_logger->WriteLine(" = " + QString::number(result_function));
+    m_logger->WriteLine();
   }
 }
 

@@ -11,7 +11,7 @@ HungarianAlgorithm::~HungarianAlgorithm() {}
 //********************************************************//
 // A single function wrapper for solving assignment problem.
 //********************************************************//
-double HungarianAlgorithm::Solve(vector<vector<double>>& DistMatrix,
+std::tuple<double, std::vector<double>> HungarianAlgorithm::Solve(vector<vector<double>>& DistMatrix,
                                  vector<int>& Assignment) {
   unsigned int nRows = DistMatrix.size();
   unsigned int nCols = DistMatrix[0].size();
@@ -37,7 +37,7 @@ double HungarianAlgorithm::Solve(vector<vector<double>>& DistMatrix,
 
   delete[] distMatrixIn;
   delete[] assignment;
-  return cost;
+  return std::make_tuple(cost, number_in_func);
 }
 
 //********************************************************//
@@ -81,6 +81,13 @@ void HungarianAlgorithm::assignmentoptimal(int* assignment, double* cost,
     minDim = nOfRows;
 
     for (row = 0; row < nOfRows; row++) {
+      for (col = 0; col < nOfColumns; col++) {
+        m_logger->Write(QString::number(distMatrix[row + nOfRows * col]) + "   ");
+      }
+      m_logger->WriteLine();
+    }
+
+    for (row = 0; row < nOfRows; row++) {
       /* find the smallest element in the row */
       distMatrixTemp = distMatrix + row;
       minValue = *distMatrixTemp;
@@ -93,11 +100,44 @@ void HungarianAlgorithm::assignmentoptimal(int* assignment, double* cost,
       }
 
       /* subtract the smallest element from each element of the row */
+      m_logger->WriteLine("Минимальное значение в " + QString::number(row + 1) +
+                          " строке = " + QString::number(minValue));
       distMatrixTemp = distMatrix + row;
       while (distMatrixTemp < distMatrixEnd) {
         *distMatrixTemp -= minValue;
         distMatrixTemp += nOfRows;
       }
+    }
+
+    m_logger->WriteLine();
+
+    for (row = 0; row < nOfRows; row++) {
+      for (col = 0; col < nOfColumns; col++) {
+        m_logger->Write(QString::number(distMatrix[row + nOfRows * col]) + "   ");
+      }
+      m_logger->WriteLine();
+    }
+    m_logger->WriteLine();
+
+    for (col = 0; col < nOfColumns; col++) {
+      /* find the smallest element in the column */
+      distMatrixTemp = distMatrix + nOfRows * col;
+      columnEnd = distMatrixTemp + nOfRows;
+
+      minValue = *distMatrixTemp++;
+      while (distMatrixTemp < columnEnd) {
+        value = *distMatrixTemp++;
+        if (value < minValue)
+          minValue = value;
+      }
+
+      /* subtract the smallest element from each element of the column */
+      distMatrixTemp = distMatrix + nOfRows * col;
+      while (distMatrixTemp < columnEnd)
+        *distMatrixTemp++ -= minValue;
+
+      m_logger->WriteLine("Минимальное значение в " + QString::number(col + 1) +
+                          " столбце = " + QString::number(minValue));
     }
 
     /* Steps 1 and 2a */
@@ -112,6 +152,19 @@ void HungarianAlgorithm::assignmentoptimal(int* assignment, double* cost,
         }
       }
     }
+
+    for (row = 0; row < nOfRows; row++) {
+      for (col = 0; col < nOfColumns; col++) {
+        m_logger->Write(QString::number(distMatrix[row + nOfRows * col]));
+        if(starMatrix[row + nOfRows * col]) {
+          m_logger->Write("*  ");
+        } else {
+          m_logger->Write("   ");
+        }
+      }
+      m_logger->WriteLine();
+    }
+    m_logger->WriteLine();
 
   } else /* if(nOfRows > nOfColumns) */
   {
@@ -133,6 +186,9 @@ void HungarianAlgorithm::assignmentoptimal(int* assignment, double* cost,
       distMatrixTemp = distMatrix + nOfRows * col;
       while (distMatrixTemp < columnEnd)
         *distMatrixTemp++ -= minValue;
+
+      m_logger->WriteLine("Минимальное значение в " + QString::number(col + 1) +
+                          " столбце = " + QString::number(minValue));
     }
 
     /* Steps 1 and 2a */
@@ -193,8 +249,10 @@ void HungarianAlgorithm::computeassignmentcost(int* assignment, double* cost,
 
   for (row = 0; row < nOfRows; row++) {
     col = assignment[row];
-    if (col >= 0)
+    if (col >= 0) {
+      number_in_func.push_back(distMatrix[row + nOfRows * col]);
       *cost += distMatrix[row + nOfRows * col];
+    }
   }
 }
 
@@ -344,6 +402,18 @@ void HungarianAlgorithm::step4(int* assignment, double* distMatrix,
   }
   for (n = 0; n < nOfRows; n++)
     coveredRows[n] = false;
+
+  for (int idx_row = 0; idx_row < nOfRows; idx_row++) {
+    for (int idx_col = 0; idx_col < nOfColumns; idx_col++) {
+      m_logger->Write(QString::number(distMatrix[idx_row + nOfRows * idx_col]));
+      if(starMatrix[idx_row + nOfRows * idx_col]) {
+        m_logger->Write("*  ");
+      } else {
+        m_logger->Write("   ");
+      }
+    }
+    m_logger->WriteLine();
+  }
 
   /* move to step 2a */
   step2a(assignment, distMatrix, starMatrix, newStarMatrix, primeMatrix,
